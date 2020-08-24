@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const coursesSchema = new mongoose.Schema({
-  course: {
+  courseName: {
     type: String,
     required: true,
     trim: true
@@ -18,7 +18,7 @@ const coursesSchema = new mongoose.Schema({
     }
   ],
   par: {
-    
+
   },
   rating: {
     type: Number,
@@ -30,6 +30,20 @@ const coursesSchema = new mongoose.Schema({
   }
 })
 
-const Courses = mongoose.model("Courses", coursesSchema)
+coursesSchema.statics.findCourseByName = async (name) => {
+  const course = await Courses.findOne({ courseName: name })
+
+  return course
+}
+
+coursesSchema.statics.calculatePar = async (name, holes) => {
+  const course = await Courses.findOne({ courseName: name })
+
+  const par = (course.par[holes[0]].concat(course.par[holes[0]])).reduce((total, num) => parseInt(total) + parseInt(num))
+
+  return par
+}
+
+const Courses = mongoose.model("courses", coursesSchema)
 
 module.exports = Courses
