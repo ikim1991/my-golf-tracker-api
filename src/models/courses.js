@@ -36,6 +36,12 @@ coursesSchema.statics.findCourseByName = async (name) => {
   return course
 }
 
+coursesSchema.statics.getCourses = async () => {
+  const courses = await Courses.find()
+
+  return courses
+}
+
 coursesSchema.statics.calculatePar = async (name, holes) => {
   const course = await Courses.findOne({ courseName: name })
 

@@ -4,14 +4,13 @@ const Courses = require('./models/courses');
 const Rounds = require('./models/rounds');
 const Users = require('./models/users');
 
-Users.updatePlayerInfo("Chris K.", "2019").then(data => console.log(data))
-
 router.get("/", async (req, res) => {
 
   const user = await Users.getPlayerInfo("Chris K.")
+  const courses = await Courses.getCourses()
 
   if(user){
-    return res.status(201).send(user)
+    return res.status(201).send({user, courses})
   }
 
   res.status(404).send({error: "User Not Found"})
@@ -22,7 +21,6 @@ router.get("/", async (req, res) => {
 router.post("/newcourse", async (req, res) => {
   if(req.body.holes.length === new Set(req.body.holes).size){
     const course = new Courses(req.body)
-    console.log(course)
     await course.save()
 
     console.log(await Courses.find())
@@ -50,6 +48,8 @@ router.post("/newround", async (req, res) => {
 
   await round.save()
   await round.calculateHandicapDifferential()
+
+  console.log(round)
 
   res.send({status: "SUCCESS"})
 })
