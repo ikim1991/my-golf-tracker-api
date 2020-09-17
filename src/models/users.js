@@ -58,7 +58,7 @@ usersSchema.statics.getSeasonInfo = async (username, querySeason) => {
 
 }
 
-usersSchema.statics.intializePlayerDefaults = async (username, season) => {
+usersSchema.statics.initializePlayerDefaults = async (username, season) => {
 
   const user = await Users.getPlayerInfo(username)
 
@@ -88,8 +88,6 @@ usersSchema.statics.intializePlayerDefaults = async (username, season) => {
 
 
 }
-
-
 
 const Users = mongoose.model("users", usersSchema)
 

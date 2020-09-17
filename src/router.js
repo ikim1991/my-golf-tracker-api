@@ -9,13 +9,22 @@ router.get("/", async (req, res) => {
   const user = await Users.getPlayerInfo("Chris K.")
   const courses = await Courses.getCourses()
 
+  if(!user){
+    await Users.initializePlayerDefaults("Chris K.", (new Date().getFullYear()))
+  }
+
+  const season = user.seasons[user.seasons.length - 1].season
+
+  const linePlot = await Rounds.createLinePlotCoordinates(season)
+  const scoreCount = await Rounds.calculateCounts(season)
+  const scorecard = await Rounds.createScorecard(season)
+
   if(user){
-    return res.status(201).send({user, courses})
+    return res.status(201).send({user, courses, linePlot, scoreCount, scorecard})
   }
 
   res.status(404).send({error: "User Not Found"})
 
-  // res.status(201).send(latestSeason)
 })
 
 router.post("/newcourse", async (req, res) => {
@@ -23,7 +32,6 @@ router.post("/newcourse", async (req, res) => {
     const course = new Courses(req.body)
     await course.save()
 
-    console.log(await Courses.find())
     res.send({status: "SUCCESS"})
   } else{
     res.send({status: "ERROR"})
@@ -48,8 +56,6 @@ router.post("/newround", async (req, res) => {
 
   await round.save()
   await round.calculateHandicapDifferential()
-
-  console.log(round)
 
   res.send({status: "SUCCESS"})
 })
