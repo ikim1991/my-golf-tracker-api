@@ -12,26 +12,29 @@ const usersSchema = mongoose.Schema({
 
 usersSchema.statics.updatePlayerInfo = async (username, season) => {
 
-  const userInfo = await Users.getPlayerInfo(username)
+  const userInfo = (await Users.findOne( { username: username } ))
+  let index = 0
 
-  if(userInfo){
-    console.log("USER FOUND")
-  } else{
-    console.log("USER NOT FOUND")
+  for(let i = 0; i < userInfo.seasons.length; i++){
+    if(userInfo.seasons[i].season == season){
+      index = i
+    }
   }
 
+  const seasons = {
+    season: season,
+    handicap: (await Rounds.findHandicap(season)),
+    lowest: (await Rounds.findLowest(season)),
+    average: (await Rounds.findAverage(season)),
+    highest: (await Rounds.findHighest(season)),
+    rounds: (await Rounds.findRoundCount(season)),
+    courses: (await Rounds.findCourseCount())
+  }
+
+  userInfo.seasons.splice(index, 1, seasons)
+  userInfo.save()
+
   return userInfo
-
-  // const seasons = {
-  //   season: season,
-  //   handicap: (await Rounds.findHandicap(season)),
-  //   lowest: (await Rounds.findLowest(season)),
-  //   average: (await Rounds.findAverage(season)),
-  //   highest: (await Rounds.findHighest(season)),
-  //   rounds: (await Rounds.findRoundCount(season)),
-  //   courses: (await Rounds.findCourseCount())
-  // }
-
 }
 
 usersSchema.statics.getPlayerInfo = async (username) => {

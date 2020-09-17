@@ -56,6 +56,7 @@ router.post("/newround", async (req, res) => {
 
   await round.save()
   await round.calculateHandicapDifferential()
+  await Users.updatePlayerInfo("Chris K.", req.body.season)
 
   res.send({status: "SUCCESS"})
 })
