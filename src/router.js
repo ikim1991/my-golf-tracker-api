@@ -13,14 +13,34 @@ router.get("/", async (req, res) => {
     await Users.initializePlayerDefaults("Chris K.", (new Date().getFullYear()))
   }
 
-  const season = user.seasons[user.seasons.length - 1].season
+  const year = user.seasons[user.seasons.length - 1].season
 
-  const linePlot = await Rounds.createLinePlotCoordinates(season)
-  const scoreCount = await Rounds.calculateCounts(season)
-  const scorecard = await Rounds.createScorecard(season)
+  const linePlot = await Rounds.createLinePlotCoordinates(year)
+  const scoreCount = await Rounds.calculateCounts(year)
+  const scorecard = await Rounds.createScorecard(year)
 
   if(user){
-    return res.status(201).send({user, courses, linePlot, scoreCount, scorecard})
+    return res.status(201).send({user, courses, year, linePlot, scoreCount, scorecard})
+  }
+
+  res.status(404).send({error: "User Not Found"})
+
+})
+
+router.post("/season", async (req, res) => {
+
+  console.log(req.body)
+
+  const year = req.body.year
+  const username = req.body.user.username
+  const courses = await Courses.getCourses()
+  const user = await Users.getPlayerInfo(username)
+  const linePlot = await Rounds.createLinePlotCoordinates(year)
+  const scoreCount = await Rounds.calculateCounts(year)
+  const scorecard = await Rounds.createScorecard(year)
+
+  if(user){
+    return res.status(201).send({user, courses, year, linePlot, scoreCount, scorecard})
   }
 
   res.status(404).send({error: "User Not Found"})
