@@ -6,13 +6,13 @@ const Users = require('./models/users');
 
 router.get("/", async (req, res) => {
 
-  const user = await Users.getPlayerInfo("Chris K.")
-  const courses = await Courses.getCourses()
+  let user = await Users.getPlayerInfo("Chris K.")
 
   if(!user){
-    await Users.initializePlayerDefaults("Chris K.", (new Date().getFullYear()))
+    user = await Users.initializePlayerDefaults("Chris K.", (new Date().getFullYear()))
   }
 
+  const courses = await Courses.getCourses()
   const year = user.seasons[user.seasons.length - 1].season
 
   const linePlot = await Rounds.createLinePlotCoordinates(year)
@@ -28,8 +28,6 @@ router.get("/", async (req, res) => {
 })
 
 router.post("/season", async (req, res) => {
-
-  console.log(req.body)
 
   const year = req.body.year
   const username = req.body.user.username

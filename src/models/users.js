@@ -24,9 +24,9 @@ usersSchema.statics.updatePlayerInfo = async (username, season) => {
   const seasons = {
     season: season,
     handicap: Math.round((await Rounds.findHandicap(season))),
-    lowest: (await Rounds.findLowest(season)),
-    average: (await Rounds.findAverage(season)),
-    highest: (await Rounds.findHighest(season)),
+    lowest: Math.round((await Rounds.findLowest(season))),
+    average: Math.round((await Rounds.findAverage(season))),
+    highest: Math.round((await Rounds.findHighest(season))),
     rounds: (await Rounds.findRoundCount(season)),
     courses: (await Rounds.findCourseCount())
   }
