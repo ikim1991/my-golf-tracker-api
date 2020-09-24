@@ -45,7 +45,7 @@ coursesSchema.statics.getCourses = async () => {
 coursesSchema.statics.calculatePar = async (name, holes) => {
   const course = await Courses.findOne({ courseName: name })
 
-  const par = (course.par[holes[0]].concat(course.par[holes[0]])).reduce((total, num) => parseInt(total) + parseInt(num))
+  const par = (course.par[holes[0]].concat(course.par[holes[1]])).reduce((total, num) => parseInt(total) + parseInt(num))
 
   return par
 }
