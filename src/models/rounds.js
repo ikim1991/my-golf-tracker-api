@@ -57,7 +57,7 @@ roundsSchema.methods.calculateHandicapDifferential = async function() {
 }
 
 roundsSchema.statics.findBySeason = async (season) => {
-  const rounds = await Rounds.find({ season: season })
+  const rounds = await Rounds.find({ season: season }).sort('playedOn')
 
   return rounds
 }
@@ -147,7 +147,7 @@ roundsSchema.statics.calculateCounts = async (season) => {
 
   const countArray = rounds.map(round => {
     let coursePar = courses.filter(course => round.course === course.courseName)[0].par
-    
+
     let par = coursePar[round.holes[0]].concat(coursePar[round.holes[1]])
     let scores = round.scores[round.holes[0]].concat(round.scores[round.holes[1]])
 
